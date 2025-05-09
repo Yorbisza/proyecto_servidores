@@ -6,6 +6,7 @@ use App\Models\ambientes;
 use App\Models\contrasenas;
 use App\Models\servidores;
 use App\Models\status;
+use App\Models\Capitanias;
 use Illuminate\Http\Request;
 
 class ServidoresController extends Controller
@@ -30,7 +31,8 @@ class ServidoresController extends Controller
         //return view('servidores.create', compact('serve'));
         $ambientes = ambientes::all();
         $status = status::all();
-        return view('modules/servidores/create', compact('ambientes', 'status'));
+        $capitanias = Capitanias::where('deleted_at','=', null)->get();
+        return view('modules/servidores/create', compact('ambientes', 'status', 'capitanias'));
     }
 
     public function store(Request $request)
@@ -45,6 +47,7 @@ class ServidoresController extends Controller
             'password' => 'nullable|string|max:255',
             'ambiente_id' => 'required',
             'status_id' => 'required',
+            'capitanias_id' => 'required',
         ]);
 
         $servidorData = [

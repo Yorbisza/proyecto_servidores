@@ -322,8 +322,8 @@ return [
             'icon' => 'fas fa-file',
         ],
         [
-            'text' => 'Server',
-            'url'  => '/servidores',
+            'text' => 'Servidores',
+            'url'  => '/servidores/index',
             'can'  => 'ver-servidores',
             'icon' => 'fas fa-file',
         ],
