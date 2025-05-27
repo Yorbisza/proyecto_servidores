@@ -19,9 +19,10 @@ class ServidoresController extends Controller
         // $ambientes = ambientes::find($serve->ambiente_id); // Busca el ambiente relacionado directamente
         $ambientes = ambientes::whereIn('id', $serve->pluck('ambiente_id'))->get();
         $status = status::whereIn('id', $serve->pluck('status_id'))->get();
+        $capitanias = Capitanias::whereIn('id', $serve->pluck('capitania_id'))->get();
 
 
-        return view('modules/servidores/index', compact('serve', 'contrasenas', 'ambientes', 'status'));
+        return view('modules/servidores/index', compact('serve', 'contrasenas', 'ambientes', 'status', 'capitanias'));
 
         // return view('servidores.show', $serve);
     }
@@ -30,9 +31,8 @@ class ServidoresController extends Controller
         //$serve = servidores::all(); // Obtener todos los servidores
         //return view('servidores.create', compact('serve'));
         $ambientes = ambientes::all();
-        $status = status::all();
         $capitanias = Capitanias::where('deleted_at','=', null)->get();
-        return view('modules/servidores/create', compact('ambientes', 'status', 'capitanias'));
+        return view('modules/servidores/create', compact('ambientes',  'capitanias'));
     }
 
     public function store(Request $request)
@@ -46,8 +46,7 @@ class ServidoresController extends Controller
             'nombre_usuario' => 'nullable|string|max:255',
             'password' => 'nullable|string|max:255',
             'ambiente_id' => 'required',
-            'status_id' => 'required',
-            'capitanias_id' => 'required',
+            'capitania_id' => 'required',
         ]);
 
         $servidorData = [
@@ -55,10 +54,24 @@ class ServidoresController extends Controller
             'ip_servidores' => $validatedData['ip_servidores'],
             'puerto' => $validatedData['puerto'],
             'ambiente_id' => $validatedData['ambiente_id'],
-            'status_id' => $validatedData['status_id'],
+            'capitania_id' => $validatedData['capitania_id'],
         ];
         $servidor = servidores::create($servidorData);
 
+
+        // Crear un nuevo modelo
+        $contrasena = new Contrasenas();
+
+        // Establecer conexión y tabla
+        if ($request->form_type === 'servidores') {
+            $contrasena->setSchemaAndTable('servidores', 'servidores.contrasenas');
+        } else {
+            $contrasena->setSchemaAndTable('database', 'base_datos.contrasenas');
+        }
+
+        // Guardar
+        $contrasena->fill($request->all());
+        $contrasena->save();
         $passwordData = [
             'serve_id' => $servidor->id,
             'nombre_usuario' => $validatedData['nombre_usuario'] ?? null,
@@ -83,11 +96,12 @@ class ServidoresController extends Controller
         $contrasena = contrasenas::where('serve_id', $serve->id)->first();
         $ambientes = ambientes::find($serve->ambiente_id); // Busca el ambiente relacionado directamente
         $status = status::find($serve->status_id); // Busca el ambiente relacionado directamente
+        $capitanias = Capitanias::find($serve->capitania_id); // Busca el ambiente relacionado directamente
 
 
 
         // Pasar los datos del servidor y la contraseña a la vista
-        return view('modules/servidores/show', compact('serve', 'contrasena', 'ambientes', 'status'));
+        return view('modules/servidores/show', compact('serve', 'contrasena', 'ambientes', 'capitanias'));
     }
 
 
@@ -96,9 +110,9 @@ class ServidoresController extends Controller
         $serve = servidores::find($id);
         $contrasenas = contrasenas::whereIn('serve_id', $serve->pluck('id'))->get();
         $ambientes = ambientes::all();
-        $status = status::all();
+        $capitanias = Capitanias::all();
 
-        return view('modules/servidores/edit', compact('serve', 'contrasenas', 'ambientes', 'status'));
+        return view('modules/servidores/edit', compact('serve', 'contrasenas', 'ambientes', 'capitanias'));
     }
 
     public function update(Request $request, $id)
@@ -111,7 +125,7 @@ class ServidoresController extends Controller
             'nombre_usuario' => 'nullable|string|max:255',
             'password' => 'nullable|string|max:255',
             'ambiente_id' => 'required',
-            'status_id' => 'required',
+            'capitania_id' => 'required',
         ]);
 
 
@@ -123,7 +137,7 @@ class ServidoresController extends Controller
             'ip_servidores' => $validatedData['ip_servidores'],
             'puerto' => $validatedData['puerto'],
             'ambiente_id' => $validatedData['ambiente_id'],
-            'status_id' => $validatedData['status_id'],
+            'capitania_id' => $validatedData['capitania_id'],
         ];
         $servidor->update($servidorData);
 

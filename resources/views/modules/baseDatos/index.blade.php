@@ -3,17 +3,16 @@
 @section('title', 'Sinea')
 
 @section('content_header')
-    <h1>SERVIDORES</h1>
+    <h1>BASE DE DATOS</h1>
 @stop
-
 @section('content')
-    <p>Bienvenido al panel de administración de servidores INEA.</p>
+    <p>Bienvenido al panel de administración de Base de Datos INEA.</p>
     <div class="container mt-4">
         <div class="row">
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('servidores.create') }}" class="btn btn-success"><i class="fas fa-plus"></i></a>
+                        <a href="{{ route('baseDatos.create') }}" class="btn btn-success"><i class="fas fa-plus"></i></a>
                         <table class="table table-sm text-center">
                             <thead>
                                 <tr>
@@ -28,42 +27,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($serve as $s)
-                                    <tr>
-                                        <td><b>{{ $s->id }}</b></td>
-                                        <td><b>{{ $s->nombre_servidores }}</b></td>
-                                        <td><b>{{ $s->ip_servidores }}</b></td>
-                                        <td><b>{{ $s->puerto }}</b></td>
-                                        <td><b>{{ $contrasenas->where('serve_id', $s->id)->first()->nombre_usuario ?? 'N/A' }}</b>
-                                        </td>
-                                        <td><b>{{ $ambientes->where('id', $s->ambiente_id)->first()->nombre ?? 'N/A' }}</b>
-                                        </td>
-                                        <td><b>{{ $capitanias->where('id', $s->capitania_id)->first()->nombre ?? 'N/A' }}</b></td>
-                                        <td>
-                                            <form method="post" action="{{ route('servidores.destroy', $s->id) }}"
-                                                class="delete-form" data-server-id="{{ $s->id }}">
-                                                <button type="button" class="btn btn-info show-button" data-toggle="modal"
-                                                    data-target="#accessKeyModal" data-id="{{ $s->id }}">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <a href="{{ route('servidores.edit', $s->id) }}" class="btn btn-warning"><i
-                                                        class="fas fa-edit"></i></a>
-                                                {{ csrf_field() }}
-                                                {{ method_field('DELETE') }}
-                                                <button class="btn btn-danger delete-button" type="button"
-                                                    data-toggle="modal" data-target="#accessKeyModal"
-                                                    data-id="{{ $s->id }}">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        </td>
 
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                         <div class="d-flex justify-content-end">
-                            {{ $serve->links() }}
+
                         </div>
                     </div>
                 </div>
@@ -181,3 +149,4 @@
         });
     </script>
 @endsection
+

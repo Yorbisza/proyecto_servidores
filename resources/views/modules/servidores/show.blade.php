@@ -21,7 +21,7 @@
                                     <th>Nombre Usuario</th>
                                     <th>Password</th>
                                     <th>Ambiente</th>
-                                    <th>Status</th>
+                                    <th>Capitania</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -33,7 +33,7 @@
                                     <td><b>{{ $contrasena->nombre_usuario ?? 'N/A' }}</b></td>
                                     <td><b>{{ $contrasena->password ?? 'N/A' }}</b></td>
                                     <td><b>{{ $ambientes->nombre ?? 'N/A' }}</b></td>
-                                    <td><b>{{ $status->nombre ?? 'N/A' }}</b></td>
+                                    <td><b>{{ $capitanias->nombre ?? 'N/A' }}</b></td>
                                     <td>
                                         <form method="post" action="{{ route('servidores.destroy', $serve->id) }}">
                                             <a href="{{ route('servidores.index') }}"

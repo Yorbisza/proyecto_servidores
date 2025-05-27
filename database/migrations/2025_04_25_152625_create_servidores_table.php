@@ -14,8 +14,7 @@ class CreateServidoresTable extends Migration
             $table->string('nombre_servidores');
             $table->string('ip_servidores');
             $table->string('puerto');
-            $table->foreignId('ambiente_id')->nullable()->constrained('servidores.ambientes');
-            $table->foreignId('status_id')->nullable()->constrained('public.status');
+            $table->foreignId('ambiente_id')->nullable()->constrained('public.ambientes');
             $table->timestamps();
             $table->softDeletes();
         });

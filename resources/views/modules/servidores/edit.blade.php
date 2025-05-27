@@ -109,19 +109,19 @@
 
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="status_id">Status: </label>
-                            <select name="status_id" id="status_id" class="form-select" required>
-                                <option value="{{ $serve->status_id }}">
-                                    {{ $status->firstWhere('id', $serve->status_id)->nombre ?? 'Selecciona un status' }}
+                            <label for="capitania_id">Capitanias: </label>
+                            <select name="capitania_id" id="capitania_id" class="form-select" required>
+                                <option value="{{ $serve->capitania_id }}">
+                                    {{ $capitanias->firstWhere('id', $serve->capitania_id)->nombre ?? 'Selecciona una capitania' }}
                                 </option>
-                                @foreach ($status as $st)
-                                    @if ($st->id !== $serve->status_id)
-                                        <option value="{{ $st->id }}">{{ $st->nombre }}</option>
+                                @foreach ($capitanias as $cap)
+                                    @if ($cap->id !== $serve->çapitania_id)
+                                        <option value="{{ $cap->id }}">{{ $cap->nombre }}</option>
                                     @endif
                                 @endforeach
                             </select>
                             <div class="invalid-feedback">
-                                Debe seleccionar un status.
+                                Debe seleccionar una capitania.
                             </div>
                         </div>
                         <div class="col-12">

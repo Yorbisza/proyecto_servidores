@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('servidores')->create('public.ambientes', function (Blueprint $table) {
+        Schema::connection('servidores')->create('database.contrasenas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('nombre_usuario');
+            $table->string('password');
+            $table->foreignId('db_id')->nullable();
             $table->timestamps();
         });
     }
@@ -23,7 +25,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-                        // Elimina la tabla si se revierte la migración
-        Schema::connection('servidores')->dropIfExists('public.ambientes');
+                // Elimina la tabla si se revierte la migración
+                Schema::connection('servidores')->dropIfExists('database.contrasenas');
     }
 };

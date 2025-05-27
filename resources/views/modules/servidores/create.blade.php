@@ -15,11 +15,11 @@
                     <form action="{{ route('servidores.store') }}" method="POST" name="proser" id="proser" class="row g-3 needs-validation" onsubmit="return validarFormulario(event)" novalidate>
                         @csrf
                         @method('POST')
-
+<input type="hidden" name="form_type" value="servidores">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="nombre_servidores">Nombre Servidor:</label>
-                                <input type="text" class="form-control" id="nombre_servidores" name="nombre_servidores" required>
+                                <input type="text" class="form-control" id="nombre_servidores" name="nombre_servidores" oninput="this.value = this.value.toUpperCase()" required>
                                 <div class="invalid-feedback">
                                     Por favor, coloca el nombre del servidor.
                                 </div>
@@ -83,15 +83,15 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="status_id">Status:</label>
-                                <select name="status_id" id="status_id" class="form-select" required>
+                                <label for="capitania_id">Capitanias:</label>
+                                <select name="capitania_id" id="capitania_id" class="form-select" required>
                                     <option value="">Seleccionar</option>
-                                    @foreach ($status as $st)
-                                        <option value="{{ $st->id }}">{{ $st->nombre }}</option>
+                                    @foreach ($capitanias as $cap)
+                                        <option value="{{ $cap->id }}">{{ $cap->nombre }}</option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">
-                                    Debe seleccionar un status.
+                                    Debe seleccionar una capitania.
                                 </div>
                             </div>
                         </div>

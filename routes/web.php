@@ -9,6 +9,7 @@ use App\Http\Controllers\AuditingController;
 use App\Http\Controllers\ttmController;
 use App\Http\Controllers\ServidoresController;
 use App\Http\Controllers\AccessKeyController;
+use App\Http\Controllers\BaseDatosController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -54,6 +55,16 @@ Route::middleware([
     })->name('modules.servidores.index');
 });
 
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/database', function () {
+        return view('modules.baseDatos.index');
+    })->name('modules.baseDatos.index');
+});
+
 //y creamos un grupo de rutas protegidas para los controladores
 Route::group(['middleware' => ['auth']], function () {
 
@@ -88,5 +99,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('servidores/edit/{id}', [ServidoresController::class, 'edit'])->name('servidores.edit');
     Route::put('servidores/update/{id}', [ServidoresController::class, 'update'])->name('servidores.update');
 
+      // Database
+    Route::get('/baseDatos/index', [BaseDatosController::class, 'index'])->name('baseDatos.index');
+    Route::get('/baseDatos/create', [BaseDatosController::class, 'create'])->name('baseDatos.create');
+    Route::post('/baseDatos/store', [BaseDatosController::class, 'store'])->name('baseDatos.store');
     });
 

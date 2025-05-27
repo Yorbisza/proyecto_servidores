@@ -19,4 +19,10 @@ class contrasenas extends Model
 
 
     ];
+
+    public function setSchemaAndTable($connection, $table)
+    {
+        $this->connection = $connection;
+        $this->table = $table;
+    }
 }

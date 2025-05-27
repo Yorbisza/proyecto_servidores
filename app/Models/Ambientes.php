@@ -10,7 +10,7 @@ class ambientes extends Model
     use HasFactory;
     protected $connection = 'servidores';
 
-    protected $table = 'servidores.ambientes';
+    protected $table = 'public.ambientes';
 
     protected $fillable = [
 
