@@ -18,16 +18,47 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Nombre Servidor</th>
-                                    <th>IP Servidor</th>
+                                    <th>Nombre Base de Datos</th>
+                                    <th>IP DB</th>
                                     <th>Puerto</th>
                                     <th>Usuario</th>
                                     <th>Ambiente</th>
-                                    <th>Capitanias</th>
+
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach ($database as $db)
+                                    <tr>
+                                        <td><b>{{ $db->id }}</b></td>
+                                        <td><b>{{ $db->nombre_servidor }}</b></td>
+                                        <td><b>{{ $db->nombre_database }}</b></td>
+                                        <td><b>{{ $db->ip_database }}</b></td>
+                                        <td><b>{{ $db->puerto }}</b></td>
+                                        <td><b>{{ $contrasenas->where('db_id', $db->id)->first()->nombre_usuario ?? 'N/A' }}</b>
+                                        </td>
+                                        <td><b>{{ $ambientes->where('id', $db->ambiente_id)->first()->nombre ?? 'N/A' }}</b>
+                                        </td>
+                                        <td>
+                                            <form method="post" action="{{ route('baseDatos.destroy', $db->id) }}"
+                                                class="delete-form" data-db-id="{{ $db->id }}">
+                                                <button type="button" class="btn btn-info show-button" data-toggle="modal"
+                                                    data-target="#accessKeyModal" data-id="{{ $db->id }}">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <a href="{{ route('baseDatos.edit', $db->id) }}"
+                                                    class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                                                {{ csrf_field() }}
+                                                {{ method_field('DELETE') }}
+                                                <button class="btn btn-danger" type="button"
+                                                    >
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        </td>
 
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                         <div class="d-flex justify-content-end">
@@ -55,7 +86,7 @@
                         <div class="form-group">
                             <label for="access_key">Contraseña</label>
                             <input type="password" name="access_key" id="access_key" class="form-control" required>
-                            <input type="hidden" id="serve_id" name="serve_id">
+                            <input type="hidden" id="db_id" name="db_id">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -70,13 +101,13 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).on('click', '[data-toggle="modal"][data-target="#accessKeyModal"]', function(event) {
-            var serverId = $(this).data('id'); // Obtener el ID del botón
+            var dbId = $(this).data('id'); // Obtener el ID del botón
             var modal = $('#accessKeyModal');
 
             // Validar el ID antes de abrir el modal
-            if (serverId) {
-                modal.find('#serve_id').val(serverId); // Establecer el ID en el campo oculto
-                console.log('ID del servidor capturado:', serverId); // Para depuración
+            if (dbId) {
+                modal.find('#db_id').val(dbId); // Establecer el ID en el campo oculto
+                console.log('ID del servidor capturado:', dbId); // Para depuración
             } else {
                 console.error('No se pudo capturar el ID del servidor.');
             }
@@ -84,9 +115,9 @@
         // Capturar el evento de apertura del modal
         $('#accessKeyModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Botón que abrió el modal
-            var serverId = button.data('id'); // Extraer el ID del atributo data-id
+            var dbId = button.data('id'); // Extraer el ID del atributo data-id
             var modal = $(this);
-            modal.find('#serve_id').val(serverId); // Establecer el ID en el campo oculto
+            modal.find('#db_id').val(dbId); // Establecer el ID en el campo oculto
         });
 
 
@@ -94,11 +125,11 @@
 
         // Captura el evento de clic en los botones
         $(document).on('click', '.show-button, .delete-button', function(event) {
-            var serverId = $(this).data('id'); // Obtener el ID del botón
+            var dbId = $(this).data('id'); // Obtener el ID del botón
             var modal = $('#accessKeyModal');
 
             // Establecer el ID en el campo oculto
-            modal.find('#serve_id').val(serverId);
+            modal.find('#db_id').val(dbId);
             currentAction = $(this).hasClass('delete-button') ? 'delete' : 'show'; // Determinar la acción
         });
 
@@ -107,8 +138,8 @@
             event.preventDefault(); // Evitar el envío normal del formulario
 
             const accessKey = document.getElementById('access_key').value;
-            const serverId = document.getElementById('serve_id').value;
-            const deleteForm = document.querySelector(`.delete-form[data-server-id="${serverId}"]`);
+            const dbId = document.getElementById('db_id').value;
+            const deleteForm = document.querySelector(`.delete-form[data-db-id="${dbId}"]`);
 
             // Verifica la contraseña
             fetch('{{ route('access.key.verify') }}', {
@@ -119,7 +150,7 @@
                     },
                     body: JSON.stringify({
                         access_key: accessKey,
-                        serve_id: serverId
+                        db_id: dbId
                     })
                 })
                 .then(response => {
@@ -136,8 +167,8 @@
                         if (currentAction === 'delete') {
                             deleteForm.submit(); // Envía el formulario de eliminación
                         } else if (currentAction === 'show') {
-                            window.location.href = '{{ route('servidores.show', '') }}/' +
-                                serverId; // Redirige a la vista
+                            window.location.href = '{{ route('baseDatos.show', '') }}/' +
+                                dbId; // Redirige a la vista
                         }
                     } else {
                         alert(data.message);
@@ -149,4 +180,3 @@
         });
     </script>
 @endsection
-

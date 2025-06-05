@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nombre_database');
             $table->string('ip_database');
             $table->string('puerto');
-            $table->foreignId('ambiente_id')->nullable()->constrained('database.base_datos');
+            $table->foreignId('ambiente_id')->nullable()->constrained('public.ambientes');
             $table->timestamps();
             $table->softDeletes();
         });

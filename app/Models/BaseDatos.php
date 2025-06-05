@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ambientes;
 
 class BaseDatos extends Model
 {
@@ -21,4 +22,9 @@ class BaseDatos extends Model
         'puerto',
         'ambiente_id',
     ];
+
+    public function ambiente()
+    {
+        return $this->belongsTo(Ambientes::class, 'ambiente_id');
+    }
 }

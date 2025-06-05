@@ -40,7 +40,7 @@
                                 <div class="form-group">
                                     <label for="ip_database">IP Base de Datos:</label>
                                     <input type="text" class="form-control" id="ip_database" name="ip_database"
-                                        onkeypress="return NumerosyPuntos(event)" required>
+                                        required>
                                     <div class="invalid-feedback">
                                         Por favor, coloca la IP de Base de Datos.
                                     </div>
@@ -69,8 +69,8 @@
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="contrasenas">Contraseña:</label>
-                                    <input type="text" class="form-control" id="contrasenas" name="password">
+                                    <label for="password">Contraseña:</label>
+                                    <input type="text" class="form-control" id="password" name="password">
 
                                 </div>
                             </div>

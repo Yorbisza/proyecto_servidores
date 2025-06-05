@@ -103,5 +103,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/baseDatos/index', [BaseDatosController::class, 'index'])->name('baseDatos.index');
     Route::get('/baseDatos/create', [BaseDatosController::class, 'create'])->name('baseDatos.create');
     Route::post('/baseDatos/store', [BaseDatosController::class, 'store'])->name('baseDatos.store');
+    Route::get('/baseDatos/edit/{id}', [BaseDatosController::class, 'edit'])->name('baseDatos.edit');
+    Route::put('/baseDatos/update/{id}', [BaseDatosController::class, 'update'])->name('baseDatos.update');
+    Route::get('/baseDatos/show/{id}', [BaseDatosController::class, 'show'])->name('baseDatos.show');
+    Route::delete('/baseDatos/destroy/{id}', [BaseDatosController::class, 'destroy'])->name('baseDatos.destroy');
+
     });
 

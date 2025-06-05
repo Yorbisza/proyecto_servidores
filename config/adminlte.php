@@ -327,6 +327,12 @@ return [
             'can'  => 'ver-servidores',
             'icon' => 'fas fa-file',
         ],
+               [
+            'text' => 'Base de Datos',
+            'url'  => '/baseDatos/index',
+            'can'  => 'ver-db',
+            'icon' => 'fas fa-file',
+        ],
         [
             'text' => 'Logs Auditoria',
             'url'  => '/audits',
