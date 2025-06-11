@@ -8,6 +8,7 @@ use App\Models\ambientes;
 use App\Models\ContrasenasDB;
 use App\Models\status;
 use App\Models\Capitanias;
+use App\Models\UsuarioCategorias;
 
 use Illuminate\Http\Request;
 
@@ -43,7 +44,18 @@ class BaseDatosController extends Controller
                 'nombre_usuario' => 'nullable|string|max:255',
                 'password' => 'nullable|string|max:255',
                 'ambiente_id' => 'required',
+                'categoria_id' => 'required',
+
             ]);
+
+             $usuario = new UsuarioCategorias();
+
+    // Guardar el usuario
+    $usuario->fill($validatedData); // Asegúrate de que solo los campos necesarios se llenen
+    $usuario->save();
+
+    // Obtener el ID del usuario recién creado
+    $user_categoria_id = $usuario->id;
 
             $dbData = [
                 'nombre_servidor' => $validatedData['nombre_servidor'],
@@ -51,18 +63,13 @@ class BaseDatosController extends Controller
                 'ip_database' => $validatedData['ip_database'],
                 'puerto' => $validatedData['puerto'],
                 'ambiente_id' => $validatedData['ambiente_id'],
+                'user_categoria_id' => $user_categoria_id, // Relacionar el ID del usuario
+
             ];
 
             $dbData_id = BaseDatos::create($dbData);
 
-            $passwordData = [
-                'db_id' => $dbData_id->id,
-                'nombre_usuario' => $validatedData['nombre_usuario'],
-                'password' => $validatedData['password'],
-            ];
-
-            ContrasenasDB::create($passwordData);
-
+           
             return redirect()->route('baseDatos.index')->with('success', 'Base de datos creada exitosamente.');
         } catch (\Exception $e) {
             // Retorna un error en formato JSON

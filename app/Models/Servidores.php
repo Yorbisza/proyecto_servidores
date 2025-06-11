@@ -18,5 +18,6 @@ class servidores extends Model
         'puerto',
         'ambiente_id',
         'capitania_id',
+        'user_categoria_id'
     ];
 }

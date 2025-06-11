@@ -21,6 +21,7 @@ class BaseDatos extends Model
         'ip_database',
         'puerto',
         'ambiente_id',
+        'user_categoria_id',
     ];
 
     public function ambiente()

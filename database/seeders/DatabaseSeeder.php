@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             CapitaniaSeeder::class,
             PermisoSeeder::class,
             StatusTableSeeder::class,
-            AmbientesTableSeeder::class
+            AmbientesTableSeeder::class,
+            CategoriaTableSeeder::class
         ]);
     }
 }

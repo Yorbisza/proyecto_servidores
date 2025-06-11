@@ -34,7 +34,7 @@
                                         <td><b>{{ $s->nombre_servidores }}</b></td>
                                         <td><b>{{ $s->ip_servidores }}</b></td>
                                         <td><b>{{ $s->puerto }}</b></td>
-                                        <td><b>{{ $contrasenas->where('serve_id', $s->id)->first()->nombre_usuario ?? 'N/A' }}</b>
+                                        <td><b>{{ $usuarioCategorias->where('id', $s->user_categoria_id)->first()->nombre_usuario ?? 'N/A' }}</b>
                                         </td>
                                         <td><b>{{ $ambientes->where('id', $s->ambiente_id)->first()->nombre ?? 'N/A' }}</b>
                                         </td>

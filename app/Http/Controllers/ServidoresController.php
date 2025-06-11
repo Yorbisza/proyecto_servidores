@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\ambientes;
+use App\Models\Categorias;
 use App\Models\contrasenas;
 use App\Models\servidores;
 use App\Models\status;
 use App\Models\Capitanias;
+use App\Models\UsuarioCategorias;
 use Illuminate\Http\Request;
 
 class ServidoresController extends Controller
@@ -15,14 +17,16 @@ class ServidoresController extends Controller
     public function index()
     {
         $serve = servidores::paginate(5);
-        $contrasenas = contrasenas::whereIn('serve_id', $serve->pluck('id'))->get();
+        //$usuarioCategorias = UsuarioCategorias::whereIn('serve_id', $serve->pluck('id'))->get();
+        $usuarioCategorias = UsuarioCategorias::whereIn('id', $serve->pluck('user_categoria_id'))->get();
+
         // $ambientes = ambientes::find($serve->ambiente_id); // Busca el ambiente relacionado directamente
         $ambientes = ambientes::whereIn('id', $serve->pluck('ambiente_id'))->get();
         $status = status::whereIn('id', $serve->pluck('status_id'))->get();
         $capitanias = Capitanias::whereIn('id', $serve->pluck('capitania_id'))->get();
 
 
-        return view('modules/servidores/index', compact('serve', 'contrasenas', 'ambientes', 'status', 'capitanias'));
+        return view('modules/servidores/index', compact('serve', 'usuarioCategorias', 'ambientes', 'status', 'capitanias'));
 
         // return view('servidores.show', $serve);
     }
@@ -32,55 +36,51 @@ class ServidoresController extends Controller
         //return view('servidores.create', compact('serve'));
         $ambientes = ambientes::all();
         $capitanias = Capitanias::where('deleted_at','=', null)->get();
-        return view('modules/servidores/create', compact('ambientes',  'capitanias'));
+        $categorias = Categorias::all();
+        return view('modules/servidores/create', compact('ambientes',  'capitanias', 'categorias'));
     }
 
-    public function store(Request $request)
-    {
+public function store(Request $request)
+{
+    // Validar los datos del request
+    $validatedData = $request->validate([
+        'nombre_servidores' => 'required|string|max:255',
+        'ip_servidores' => 'required|ip',
+        'puerto' => 'required|string|max:10',
+        'nombre_usuario' => 'nullable|string|max:255',
+        'password' => 'nullable|string|max:255',
+        'ambiente_id' => 'required',
+        'capitania_id' => 'required',
+        'categoria_id' => 'required',
+    ]);
 
+    // Crear un nuevo modelo de UsuarioCategorias
+    $usuario = new UsuarioCategorias();
 
-        $validatedData = $request->validate([
-            'nombre_servidores' => 'required|string|max:255',
-            'ip_servidores' => 'required|ip',
-            'puerto' => 'required|string|max:10',
-            'nombre_usuario' => 'nullable|string|max:255',
-            'password' => 'nullable|string|max:255',
-            'ambiente_id' => 'required',
-            'capitania_id' => 'required',
-        ]);
+    // Guardar el usuario
+    $usuario->fill($validatedData); // Asegúrate de que solo los campos necesarios se llenen
+    $usuario->save();
 
-        $servidorData = [
-            'nombre_servidores' => $validatedData['nombre_servidores'],
-            'ip_servidores' => $validatedData['ip_servidores'],
-            'puerto' => $validatedData['puerto'],
-            'ambiente_id' => $validatedData['ambiente_id'],
-            'capitania_id' => $validatedData['capitania_id'],
-        ];
-        $servidor = servidores::create($servidorData);
+    // Obtener el ID del usuario recién creado
+    $user_categoria_id = $usuario->id;
 
+    // Crear datos para el servidor
+    $servidorData = [
+        'nombre_servidores' => $validatedData['nombre_servidores'],
+        'ip_servidores' => $validatedData['ip_servidores'],
+        'puerto' => $validatedData['puerto'],
+        'ambiente_id' => $validatedData['ambiente_id'],
+        'capitania_id' => $validatedData['capitania_id'],
+        'user_categoria_id' => $user_categoria_id, // Relacionar el ID del usuario
+    ];
 
-        // Crear un nuevo modelo
-        $contrasena = new Contrasenas();
+    // Crear el servidor
+    $servidor = servidores::create($servidorData);
 
-        // Establecer conexión y tabla
-        if ($request->form_type === 'servidores') {
-            $contrasena->setSchemaAndTable('servidores', 'servidores.contrasenas');
-        } else {
-            $contrasena->setSchemaAndTable('database', 'base_datos.contrasenas');
-        }
+    // Redirigir al índice de servidores
+    return to_route('servidores.index');
+}
 
-        // Guardar
-        $contrasena->fill($request->all());
-        $contrasena->save();
-        $passwordData = [
-            'serve_id' => $servidor->id,
-            'nombre_usuario' => $validatedData['nombre_usuario'] ?? null,
-            'password' => $validatedData['password'] ?? null,
-        ];
-        contrasenas::create($passwordData);
-
-        return to_route('servidores.index');
-    }
 
     public function show(string $id)
     {
